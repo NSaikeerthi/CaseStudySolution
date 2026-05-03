@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Budget_Required_For_Active_Projects</fullName>
+    <active>true</active>
+    <description>When Status is Active, Budget must be populated and greater than zero (zero and negative amounts fail).</description>
+    <errorConditionFormula>AND(
+ISPICKVAL(Status__c, &quot;Active&quot;),
+OR(
+ISBLANK(Budget__c),
+Budget__c &lt;= 0
+)
+)</errorConditionFormula>
+    <errorMessage>Budget must be greater than 0 when Project Status is Active. 
+Please enter a valid Budget amount to proceed.</errorMessage>
+</ValidationRule>

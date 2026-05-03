@@ -1,0 +1,123 @@
+<template>
+    <lightning-card>
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <template lwc:if={recordId}>
+                <lightning-record-view-form
+                    record-id={recordId}
+                    object-api-name="Account"
+                    density="compact"
+                    onerror={handleAccountViewError}
+                >
+                    <div class="summary-fields slds-grid slds-wrap slds-gutters_small">
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1">
+                            <lightning-output-field field-name="Name"></lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1">
+                            <lightning-output-field
+                                field-name="Total_Projects__c"
+                            ></lightning-output-field>
+                        </div>
+                    </div>
+                </lightning-record-view-form>
+            </template>
+
+            <div class="slds-grid slds-wrap slds-grid_vertical-align-end slds-gutters_small slds-m-top_medium">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-combobox
+                        name="status"
+                        label="Filter by status"
+                        value={selectedStatus}
+                        options={statusOptions}
+                        onchange={handleStatusChange}
+                        disabled={statusDisabled}
+                    ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <div class="slds-grid slds-grid_vertical-align-end">
+                        <div class="slds-col slds-grow">
+                            <lightning-input
+                                type="toggle"
+                                label="Show only active projects"
+                                checked={activeOnly}
+                                message-toggle-active="Active only"
+                                message-toggle-inactive="All statuses"
+                                onchange={handleActiveToggle}
+                            ></lightning-input>
+                        </div>
+                        <div class="slds-col slds-no-flex">
+                            <lightning-button-icon
+                                icon-name="utility:refresh"
+                                variant="border-filled"
+                                alternative-text="Reset filters and refresh"
+                                title="Reset filters and refresh"
+                                onclick={handleRefresh}
+                                disabled={loadingProjects}
+                            ></lightning-button-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-m-top_medium">
+                <template lwc:if={loadingProjects}>
+                    <lightning-spinner alternative-text="Loading projects"></lightning-spinner>
+                </template>
+                <template lwc:else>
+                    <lightning-datatable
+                        key-field="id"
+                        data={projects}
+                        columns={columns}
+                        hide-checkbox-column
+                    ></lightning-datatable>
+                </template>
+            </div>
+
+            <div class="slds-grid slds-grid_vertical-align-end slds-wrap slds-gutters_small slds-m-top_medium">
+                <div class="slds-col slds-grow">
+                    <span class="slds-text-body_small">{rangeLabel}</span>
+                </div>
+                <div class="slds-col slds-no-flex">
+                    <lightning-combobox
+                        name="pageSize"
+                        label="Rows per page"
+                        value={pageSizeValue}
+                        options={pageSizeOptions}
+                        onchange={handlePageSizeChange}
+                        dropdown-alignment="bottom-right"
+                    ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-no-flex">
+                    <lightning-button
+                        variant="neutral"
+                        label="First"
+                        title="First page"
+                        onclick={firstPage}
+                        disabled={disableFirst}
+                        class="slds-m-right_xx-small"
+                    ></lightning-button>
+                    <lightning-button
+                        variant="neutral"
+                        label="Previous"
+                        onclick={prevPage}
+                        disabled={disablePrev}
+                        class="slds-m-right_xx-small"
+                    ></lightning-button>
+                    <lightning-button
+                        variant="neutral"
+                        label="Next"
+                        onclick={nextPage}
+                        disabled={disableNext}
+                        class="slds-m-right_xx-small"
+                    ></lightning-button>
+                    <lightning-button
+                        variant="neutral"
+                        label="Last"
+                        title="Last page"
+                        onclick={lastPage}
+                        disabled={disableLast}
+                    ></lightning-button>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>
